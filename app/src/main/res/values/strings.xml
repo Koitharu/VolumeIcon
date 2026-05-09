@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">VolumeIcon</string>
+    <string name="accessibility_service_description">Show volume icon in the notification bar</string>
+</resources>
