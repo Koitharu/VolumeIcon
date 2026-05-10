@@ -16,10 +16,17 @@ class AppSettings(context: Context) {
                 ?: NotificationPolicy.ALWAYS
         }
 
-    fun doOnNotificationPolicyChanged(block: (NotificationPolicy) -> Unit): AutoCloseable {
+    val iconTheme: IconTheme
+        get() {
+            val value = prefs.getString(KEY_ICON_THEME, null)
+            return IconTheme.entries.find { x -> x.name == value }
+                ?: IconTheme.SOLID
+        }
+
+    fun doOnSettingsChanged(keys: Set<String>, block: AppSettings.() -> Unit): AutoCloseable {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == KEY_NOTIFICATION_POLICY) {
-                block(notificationPolicy)
+            if (key in keys) {
+                block()
             }
         }
         prefs.registerOnSharedPreferenceChangeListener(listener)
@@ -31,5 +38,7 @@ class AppSettings(context: Context) {
     companion object {
 
         const val KEY_NOTIFICATION_POLICY = "notify_policy"
+        const val KEY_ICON_THEME = "icon_theme"
+        const val KEY_SYSTEM_NOTIFICATIONS_SETTINGS = "system_notifications_settings"
     }
 }

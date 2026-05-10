@@ -22,7 +22,7 @@ class VolumeIconService : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
         settings = AppSettings(this)
-        notificationHolder = NotificationHolder(this)
+        notificationHolder = NotificationHolder(this, settings.iconTheme)
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
             override fun onChange(selfChange: Boolean, uri: Uri?) {
@@ -41,7 +41,10 @@ class VolumeIconService : AccessibilityService() {
             volumeObserver
         )
         handleVolumeChanged()
-        preferenceListener = settings.doOnNotificationPolicyChanged {
+        preferenceListener = settings.doOnSettingsChanged(
+            setOf(AppSettings.KEY_ICON_THEME, AppSettings.KEY_NOTIFICATION_POLICY)
+        ) {
+            notificationHolder.iconTheme = iconTheme
             handleVolumeChanged()
         }
     }

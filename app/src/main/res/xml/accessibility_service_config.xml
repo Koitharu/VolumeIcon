@@ -8,6 +8,6 @@
     android:canRequestTouchExplorationMode="false"
     android:canRetrieveWindowContent="false"
     android:canTakeScreenshot="false"
-    android:description="@string/accessibility_service_description"
+    android:description="@string/service_description"
     android:notificationTimeout="100"
     android:settingsActivity=".config.SettingsActivity" />

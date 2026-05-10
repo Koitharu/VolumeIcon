@@ -4,10 +4,15 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
+import org.koitharu.volumeicon.config.IconTheme
 
 class NotificationHolder(
     private val context: Context,
+    var iconTheme: IconTheme,
 ) {
 
     private val notificationManager =
@@ -38,10 +43,9 @@ class NotificationHolder(
         }
         notification.setSmallIcon(
             when {
-                volume == 0 -> R.drawable.ic_volume_muted
-                volume < 30 -> R.drawable.ic_volume_low
-                volume < 60 -> R.drawable.ic_volume_medium
-                else -> R.drawable.ic_volume_high
+                volume == 0 -> iconTheme.mutedIcon
+                volume < 60 -> iconTheme.lowVolumeIcon
+                else -> iconTheme.highVolumeIcon
             }
         )
         notification.setContentTitle(
@@ -65,9 +69,21 @@ class NotificationHolder(
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
-    private companion object {
+    companion object {
 
-        const val CHANNEL_ID = "volume"
-        const val NOTIFICATION_ID = 6
+        private const val CHANNEL_ID = "volume"
+        private const val NOTIFICATION_ID = 6
+
+        fun settingsIntent(context: Context): Intent =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+                    putExtra(Settings.EXTRA_CHANNEL_ID, CHANNEL_ID)
+                }
+            } else {
+                Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+            }
     }
 }

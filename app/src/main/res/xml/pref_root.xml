@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="@string/volume_icon_notification">
         <ListPreference
@@ -7,5 +7,14 @@
             android:entryValues="@array/show_notification_values"
             android:key="notify_policy"
             android:title="@string/show_notification" />
+        <ListPreference
+            android:defaultValue="SOLID"
+            android:entries="@array/icon_themes"
+            android:entryValues="@array/icon_themes_values"
+            android:key="icon_theme"
+            android:title="@string/icon_theme" />
+        <Preference
+            android:key="system_notifications_settings"
+            android:title="@string/system_notifications_settings" />
     </PreferenceCategory>
 </PreferenceScreen>
