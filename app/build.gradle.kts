@@ -18,6 +18,10 @@ android {
         versionName = "1.0"
     }
 
+    lint {
+        disable += "AccessibilityPolicy"
+    }
+
     buildTypes {
         release {
             optimization {
@@ -32,5 +36,5 @@ android {
 }
 
 dependencies {
-
+    // no dependencies :)
 }

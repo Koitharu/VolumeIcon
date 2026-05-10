@@ -17,7 +17,7 @@ class NotificationHolder(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                context.getString(R.string.app_name),
+                context.getString(R.string.volume_icon_notification),
                 NotificationManager.IMPORTANCE_DEFAULT
             )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -44,7 +44,13 @@ class NotificationHolder(
                 else -> R.drawable.ic_volume_high
             }
         )
-        notification.setContentTitle(context.getString(R.string.app_name))
+        notification.setContentTitle(
+            if (volume == 0) {
+                context.getString(R.string.volume_is_muted)
+            } else {
+                context.getString(R.string.volume_level, volume)
+            }
+        )
         notification.setProgress(100, volume, false)
         notification.setOngoing(true)
         notification.setCategory(Notification.CATEGORY_STATUS)

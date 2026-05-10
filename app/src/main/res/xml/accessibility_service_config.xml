@@ -2,6 +2,12 @@
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityFlags="flagDefault"
     android:canPerformGestures="false"
+    android:canRequestEnhancedWebAccessibility="false"
+    android:canRequestFingerprintGestures="false"
+    android:canControlMagnification="false"
+    android:canRequestTouchExplorationMode="false"
     android:canRetrieveWindowContent="false"
+    android:canTakeScreenshot="false"
     android:description="@string/accessibility_service_description"
-    android:notificationTimeout="100" />
+    android:notificationTimeout="100"
+    android:settingsActivity=".config.SettingsActivity" />

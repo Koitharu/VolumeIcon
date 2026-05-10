@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/volume_icon_notification">
+        <ListPreference
+            android:defaultValue="ALWAYS"
+            android:entries="@array/show_notification"
+            android:entryValues="@array/show_notification_values"
+            android:key="notify_policy"
+            android:title="@string/show_notification" />
+    </PreferenceCategory>
+</PreferenceScreen>
