@@ -39,22 +39,33 @@ class NotificationHolder(
         val notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(context, CHANNEL_ID)
         } else {
+            @Suppress("DEPRECATION")
             Notification.Builder(context)
         }
+        val isMuted = volume == 0
         notification.setSmallIcon(
             when {
-                volume == 0 -> iconTheme.mutedIcon
-                volume < 60 -> iconTheme.lowVolumeIcon
+                isMuted -> iconTheme.mutedIcon
+                volume < HIGH_VOLUME_THRESHOLD -> iconTheme.lowVolumeIcon
                 else -> iconTheme.highVolumeIcon
             }
         )
         notification.setContentTitle(
-            if (volume == 0) {
+            if (isMuted) {
                 context.getString(R.string.volume_is_muted)
             } else {
                 context.getString(R.string.volume_level, volume)
             }
         )
+        if (!isMuted) {
+            val action = Notification.Action.Builder(
+                null,
+                context.getString(R.string.mute),
+                VolumeControlReceiver.getPendingIntent(context, targetVolume = 0)
+            )
+            notification.addAction(action.build())
+        }
+        notification.setContentIntent(VolumeControlReceiver.getUiPendingIntent(context))
         notification.setProgress(100, volume, false)
         notification.setOngoing(true)
         notification.setCategory(Notification.CATEGORY_STATUS)
@@ -73,6 +84,7 @@ class NotificationHolder(
 
         private const val CHANNEL_ID = "volume"
         private const val NOTIFICATION_ID = 6
+        private const val HIGH_VOLUME_THRESHOLD = 60
 
         fun settingsIntent(context: Context): Intent =
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

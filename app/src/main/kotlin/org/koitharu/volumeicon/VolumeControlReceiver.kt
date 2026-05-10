@@ -1,0 +1,61 @@
+package org.koitharu.volumeicon
+
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioManager
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+
+class VolumeControlReceiver : BroadcastReceiver() {
+
+    override fun onReceive(context: Context, intent: Intent?) {
+        val targetVolume = intent?.data?.schemeSpecificPart?.toIntOrNull() ?: return
+        val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        if (targetVolume == SHOW_UI) {
+            if (!openVolumePanel(context)) {
+                audioManager.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+            }
+        } else {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, targetVolume, 0)
+        }
+    }
+
+    private fun openVolumePanel(context: Context): Boolean =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            try {
+                val panelIntent = Intent(Settings.Panel.ACTION_VOLUME).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+                context.startActivity(panelIntent)
+                true
+            } catch (_: IllegalStateException) {
+                false
+            }
+        } else {
+            false
+        }
+
+    companion object {
+
+        private const val ACTION_SET_VOLUME = "org.koitharu.volumeicon.ACTION_SET_VOLUME"
+        private const val SCHEME = "volume"
+        private const val SHOW_UI = -1
+
+        val intentFilter: IntentFilter
+            get() = IntentFilter(ACTION_SET_VOLUME).apply {
+                addDataScheme(SCHEME)
+            }
+
+        fun getPendingIntent(context: Context, targetVolume: Int): PendingIntent {
+            val intent = Intent(ACTION_SET_VOLUME)
+            intent.setData(Uri.fromParts(SCHEME, targetVolume.toString(), null))
+            return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        }
+
+        fun getUiPendingIntent(context: Context) = getPendingIntent(context, SHOW_UI)
+    }
+}

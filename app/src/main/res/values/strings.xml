@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VolumeIcon</string>
+    <string name="app_name">Volume Icon</string>
     <string name="service_description">Show volume icon in the notification bar</string>
     <string name="settings">Settings</string>
     <string name="always">Always</string>
@@ -15,4 +15,6 @@
     <string name="rounded">Rounded</string>
     <string name="light">Light</string>
     <string name="system_notifications_settings">System notifications settings</string>
+    <string name="mute">Mute</string>
+    <string name="unmute">Unmute</string>
 </resources>

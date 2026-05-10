@@ -10,6 +10,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
 import org.koitharu.volumeicon.config.AppSettings
+import org.koitharu.volumeicon.utils.registerReceiverCompat
 
 class VolumeIconService : AccessibilityService() {
 
@@ -18,10 +19,12 @@ class VolumeIconService : AccessibilityService() {
     private lateinit var audioManager: AudioManager
     private lateinit var settings: AppSettings
     private lateinit var preferenceListener: AutoCloseable
+    private lateinit var volumeControlReceiver: VolumeControlReceiver
 
     override fun onCreate() {
         super.onCreate()
         settings = AppSettings(this)
+        volumeControlReceiver = VolumeControlReceiver()
         notificationHolder = NotificationHolder(this, settings.iconTheme)
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
         volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
@@ -35,6 +38,7 @@ class VolumeIconService : AccessibilityService() {
     override fun onServiceConnected() {
         super.onServiceConnected()
         PermissionRequestActivity.startIfNeeded(this)
+        registerReceiverCompat(volumeControlReceiver, VolumeControlReceiver.intentFilter, false)
         contentResolver.registerContentObserver(
             Settings.System.CONTENT_URI,
             true,
@@ -52,6 +56,7 @@ class VolumeIconService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         preferenceListener.close()
+        unregisterReceiver(volumeControlReceiver)
         contentResolver.unregisterContentObserver(volumeObserver)
         notificationHolder.clear()
     }
