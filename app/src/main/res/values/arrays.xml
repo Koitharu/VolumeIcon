@@ -22,4 +22,14 @@
         <item>ROUNDED</item>
         <item>LIGHT</item>
     </string-array>
+    <string-array name="beeps">
+        <item>@string/system_behavior</item>
+        <item>@string/enabled</item>
+        <item>@string/disabled</item>
+    </string-array>
+    <string-array name="beeps_values">
+        <item>SYSTEM</item>
+        <item>ENABLED</item>
+        <item>DISABLED</item>
+    </string-array>
 </resources>

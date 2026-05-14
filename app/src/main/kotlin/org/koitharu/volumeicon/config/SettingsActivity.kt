@@ -12,6 +12,7 @@ import android.preference.PreferenceGroup
 import android.preference.PreferenceScreen
 import org.koitharu.volumeicon.NotificationHolder
 import org.koitharu.volumeicon.R
+import org.koitharu.volumeicon.VolumeIconService
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SYSTEM_NOTIFICATIONS_SETTINGS
 
 @SuppressLint("ExportedPreferenceActivity")
@@ -20,8 +21,18 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.pref_root)
+        actionBar?.setDisplayHomeAsUpEnabled(true)
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         preferenceScreen.bindSummary()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        actionBar?.subtitle = if (VolumeIconService.isActive(this)) {
+            null
+        } else {
+            getString(R.string.service_is_not_running)
+        }
     }
 
     override fun onDestroy() {
@@ -54,6 +65,7 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
                 val valueIndex = entryValues.indexOf(value)
                 summary = entries.getOrNull(valueIndex)
             }
+
             is PreferenceGroup -> repeat(preferenceCount) { i ->
                 getPreference(i).bindSummary()
             }

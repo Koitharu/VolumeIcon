@@ -9,6 +9,7 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import android.widget.Toast
 
 class VolumeControlReceiver : BroadcastReceiver() {
 
@@ -17,10 +18,15 @@ class VolumeControlReceiver : BroadcastReceiver() {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         if (targetVolume == SHOW_UI) {
             if (!openVolumePanel(context)) {
-                audioManager.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+                audioManager.adjustStreamVolume(
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.ADJUST_SAME,
+                    AudioManager.FLAG_SHOW_UI
+                )
             }
         } else {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, targetVolume, 0)
+            showToast(context, targetVolume)
         }
     }
 
@@ -38,6 +44,13 @@ class VolumeControlReceiver : BroadcastReceiver() {
         } else {
             false
         }
+
+    private fun showToast(context: Context, volume: Int) {
+        if (volume == 0) {
+            Toast.makeText(context, R.string.volume_is_muted, Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
 
     companion object {
 

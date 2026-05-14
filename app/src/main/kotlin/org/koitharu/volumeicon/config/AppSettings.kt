@@ -23,6 +23,16 @@ class AppSettings(context: Context) {
                 ?: IconTheme.SOLID
         }
 
+    val beepPolicy: BeepPolicy
+        get() {
+            val value = prefs.getString(KEY_BEEPS, null)
+            return BeepPolicy.entries.find { x -> x.name == value }
+                ?: BeepPolicy.SYSTEM
+        }
+
+    val hideVolumeUi: Boolean
+        get() = prefs.getBoolean(KEY_HIDE_UI, false)
+
     fun doOnSettingsChanged(keys: Set<String>, block: AppSettings.() -> Unit): AutoCloseable {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key in keys) {
@@ -40,5 +50,7 @@ class AppSettings(context: Context) {
         const val KEY_NOTIFICATION_POLICY = "notify_policy"
         const val KEY_ICON_THEME = "icon_theme"
         const val KEY_SYSTEM_NOTIFICATIONS_SETTINGS = "system_notifications_settings"
+        const val KEY_BEEPS = "beeps"
+        const val KEY_HIDE_UI = "no_ui"
     }
 }
