@@ -1,20 +1,24 @@
 package org.koitharu.volumeicon
 
 import android.accessibilityservice.AccessibilityService
-import android.database.ContentObserver
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.media.AudioDeviceCallback
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.AudioManager.STREAM_MUSIC
-import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings
 import android.view.accessibility.AccessibilityEvent
 import org.koitharu.volumeicon.config.AppSettings
 import org.koitharu.volumeicon.utils.registerReceiverCompat
 
 class VolumeIconService : AccessibilityService() {
 
-    private lateinit var volumeObserver: ContentObserver
+    private lateinit var volumeReceiver: BroadcastReceiver
+    private lateinit var deviceCallback: AudioDeviceCallback
     private lateinit var notificationHolder: NotificationHolder
     private lateinit var audioManager: AudioManager
     private lateinit var settings: AppSettings
@@ -27,11 +31,18 @@ class VolumeIconService : AccessibilityService() {
         volumeControlReceiver = VolumeControlReceiver()
         notificationHolder = NotificationHolder(this, settings.iconTheme)
         audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
-        volumeObserver = object : ContentObserver(Handler(Looper.getMainLooper())) {
-            override fun onChange(selfChange: Boolean, uri: Uri?) {
-                super.onChange(selfChange, uri)
+        volumeReceiver = object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context?,
+                intent: Intent?
+            ) = handleVolumeChanged()
+        }
+        deviceCallback = object : AudioDeviceCallback() {
+            override fun onAudioDevicesAdded(addedDevices: Array<out AudioDeviceInfo>) =
                 handleVolumeChanged()
-            }
+
+            override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) =
+                handleVolumeChanged()
         }
     }
 
@@ -39,11 +50,15 @@ class VolumeIconService : AccessibilityService() {
         super.onServiceConnected()
         PermissionRequestActivity.startIfNeeded(this)
         registerReceiverCompat(volumeControlReceiver, VolumeControlReceiver.intentFilter, false)
-        contentResolver.registerContentObserver(
-            Settings.System.CONTENT_URI,
-            true,
-            volumeObserver
+        registerReceiverCompat(
+            volumeReceiver,
+            IntentFilter().apply {
+                addAction("android.media.VOLUME_CHANGED_ACTION")
+                addAction(AudioManager.ACTION_AUDIO_BECOMING_NOISY)
+            },
+            true
         )
+        audioManager.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
         handleVolumeChanged()
         preferenceListener = settings.doOnSettingsChanged(
             setOf(AppSettings.KEY_ICON_THEME, AppSettings.KEY_NOTIFICATION_POLICY)
@@ -56,8 +71,9 @@ class VolumeIconService : AccessibilityService() {
     override fun onDestroy() {
         super.onDestroy()
         preferenceListener.close()
+        audioManager.unregisterAudioDeviceCallback(deviceCallback)
         unregisterReceiver(volumeControlReceiver)
-        contentResolver.unregisterContentObserver(volumeObserver)
+        unregisterReceiver(volumeReceiver)
         notificationHolder.clear()
     }
 
