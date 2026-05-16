@@ -14,8 +14,8 @@ android {
         applicationId = "org.koitharu.volumeicon"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
     }
 
     lint {
@@ -25,7 +25,7 @@ android {
     buildTypes {
         release {
             optimization {
-                enable = false
+                enable = true
             }
         }
     }
