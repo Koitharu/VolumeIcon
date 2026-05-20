@@ -35,7 +35,7 @@ class NotificationHolder(
         }
     }
 
-    fun showNotification(volume: Int) {
+    fun showNotification(volume: Int, isHeadphones: Boolean) {
         val notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(context, CHANNEL_ID)
         } else {
@@ -46,6 +46,7 @@ class NotificationHolder(
         notification.setSmallIcon(
             when {
                 isMuted -> iconTheme.mutedIcon
+                isHeadphones -> iconTheme.headphonesIcon
                 volume < HIGH_VOLUME_THRESHOLD -> iconTheme.lowVolumeIcon
                 else -> iconTheme.highVolumeIcon
             }

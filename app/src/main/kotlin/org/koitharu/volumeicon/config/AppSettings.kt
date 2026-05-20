@@ -30,6 +30,9 @@ class AppSettings(context: Context) {
                 ?: BeepPolicy.SYSTEM
         }
 
+    val isNotificationForSpeakerOnly: Boolean
+        get() = prefs.getBoolean(KEY_SPEAKER_ONLY, false)
+
     val hideVolumeUi: Boolean
         get() = prefs.getBoolean(KEY_HIDE_UI, false)
 
@@ -48,6 +51,7 @@ class AppSettings(context: Context) {
     companion object {
 
         const val KEY_NOTIFICATION_POLICY = "notify_policy"
+        const val KEY_SPEAKER_ONLY = "speaker_only"
         const val KEY_ICON_THEME = "icon_theme"
         const val KEY_SYSTEM_NOTIFICATIONS_SETTINGS = "system_notifications_settings"
         const val KEY_BEEPS = "beeps"

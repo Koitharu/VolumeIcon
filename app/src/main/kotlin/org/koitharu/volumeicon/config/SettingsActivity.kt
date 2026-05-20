@@ -13,6 +13,9 @@ import android.preference.PreferenceScreen
 import org.koitharu.volumeicon.NotificationHolder
 import org.koitharu.volumeicon.R
 import org.koitharu.volumeicon.VolumeIconService
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_ICON_THEME
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_NOTIFICATION_POLICY
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SPEAKER_ONLY
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SYSTEM_NOTIFICATIONS_SETTINGS
 
 @SuppressLint("ExportedPreferenceActivity")
@@ -24,6 +27,7 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
         actionBar?.setDisplayHomeAsUpEnabled(true)
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         preferenceScreen.bindSummary()
+        updateDependencies()
     }
 
     override fun onResume() {
@@ -57,6 +61,7 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
         key: String?
     ) {
         findPreference(key)?.bindSummary()
+        updateDependencies()
     }
 
     private fun Preference.bindSummary() {
@@ -70,5 +75,13 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
                 getPreference(i).bindSummary()
             }
         }
+    }
+
+    private fun updateDependencies() {
+        val isNotificationsOn = preferenceManager.sharedPreferences.getString(
+            KEY_NOTIFICATION_POLICY, NotificationPolicy.ALWAYS.name
+        ) != NotificationPolicy.NEVER.name
+        findPreference(KEY_SPEAKER_ONLY)?.isEnabled = isNotificationsOn
+        findPreference(KEY_ICON_THEME)?.isEnabled = isNotificationsOn
     }
 }

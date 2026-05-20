@@ -4,6 +4,9 @@ import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
+import android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER
+import android.media.AudioDeviceInfo.TYPE_BUILTIN_SPEAKER_SAFE
+import android.media.AudioManager
 import android.os.Build
 
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -24,5 +27,15 @@ fun Context.registerReceiverCompat(
         registerReceiver(receiver, intentFilter, 0)
     } else {
         registerReceiver(receiver, intentFilter)
+    }
+}
+
+@Suppress("DEPRECATION")
+fun AudioManager.isBuiltInSpeakerInUse(): Boolean {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val type = communicationDevice?.type ?: return isSpeakerphoneOn
+        type == TYPE_BUILTIN_SPEAKER || type == TYPE_BUILTIN_SPEAKER_SAFE
+    } else {
+        isSpeakerphoneOn
     }
 }

@@ -25,4 +25,6 @@
     <string name="hide_volume_slider">Hide volume slider</string>
     <string name="hide_volume_slider_description">Don\'t show volume slider when you change volume using buttons</string>
     <string name="service_is_not_running">Service is not running</string>
+    <string name="notification_for_builtin_only">Show notification for built-in speaker only</string>
+    <string name="notification_for_builtin_only_summary">Hide notification if current sound output is headphones or other external device</string>
 </resources>

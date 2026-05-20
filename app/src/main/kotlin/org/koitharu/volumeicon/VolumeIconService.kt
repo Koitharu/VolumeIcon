@@ -18,7 +18,11 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import org.koitharu.volumeicon.config.AppSettings
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_ICON_THEME
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_NOTIFICATION_POLICY
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SPEAKER_ONLY
 import org.koitharu.volumeicon.config.BeepPolicy
+import org.koitharu.volumeicon.utils.isBuiltInSpeakerInUse
 import org.koitharu.volumeicon.utils.registerReceiverCompat
 
 class VolumeIconService : AccessibilityService() {
@@ -69,7 +73,7 @@ class VolumeIconService : AccessibilityService() {
         audioManager.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
         handleVolumeChanged()
         preferenceListener = settings.doOnSettingsChanged(
-            setOf(AppSettings.KEY_ICON_THEME, AppSettings.KEY_NOTIFICATION_POLICY)
+            setOf(KEY_ICON_THEME, KEY_NOTIFICATION_POLICY, KEY_SPEAKER_ONLY)
         ) {
             notificationHolder.iconTheme = iconTheme
             handleVolumeChanged()
@@ -103,11 +107,16 @@ class VolumeIconService : AccessibilityService() {
 
     private fun handleVolumeChanged() {
         val currentVolume = audioManager.getStreamVolume(STREAM_MUSIC)
+        val isHeadphonesConnected = !audioManager.isBuiltInSpeakerInUse()
+        if (settings.isNotificationForSpeakerOnly && isHeadphonesConnected) {
+            notificationHolder.clear()
+            return
+        }
         val policy = settings.notificationPolicy
         if (policy.shouldShow(isMuted = currentVolume == 0)) {
             val maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC)
             val volumePercent = currentVolume * 100 / maxVolume
-            notificationHolder.showNotification(volumePercent)
+            notificationHolder.showNotification(volumePercent, isHeadphonesConnected)
         } else {
             notificationHolder.clear()
         }
