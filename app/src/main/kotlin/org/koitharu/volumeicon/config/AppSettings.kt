@@ -36,6 +36,9 @@ class AppSettings(context: Context) {
     val hideVolumeUi: Boolean
         get() = prefs.getBoolean(KEY_HIDE_UI, false)
 
+    val onDeviceChangedActions: Set<String>
+        get() = prefs.getStringSet(KEY_DEVICE_CHANGE_ACTIONS, emptySet()).orEmpty()
+
     fun doOnSettingsChanged(keys: Set<String>, block: AppSettings.() -> Unit): AutoCloseable {
         val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key in keys) {
@@ -56,5 +59,9 @@ class AppSettings(context: Context) {
         const val KEY_SYSTEM_NOTIFICATIONS_SETTINGS = "system_notifications_settings"
         const val KEY_BEEPS = "beeps"
         const val KEY_HIDE_UI = "no_ui"
+        const val KEY_DEVICE_CHANGE_ACTIONS = "device_change_actions"
+
+        const val VALUE_SHOW_TOAST = "toast"
+        const val VALUE_SHOW_UI = "volume_ui"
     }
 }

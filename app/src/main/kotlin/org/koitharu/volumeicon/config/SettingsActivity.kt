@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.ListPreference
+import android.preference.MultiSelectListPreference
 import android.preference.Preference
 import android.preference.PreferenceActivity
 import android.preference.PreferenceGroup
@@ -66,13 +67,20 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
 
     private fun Preference.bindSummary() {
         when (this) {
+            is PreferenceGroup -> repeat(preferenceCount) { i ->
+                getPreference(i).bindSummary()
+            }
+
             is ListPreference -> {
                 val valueIndex = entryValues.indexOf(value)
                 summary = entries.getOrNull(valueIndex)
             }
 
-            is PreferenceGroup -> repeat(preferenceCount) { i ->
-                getPreference(i).bindSummary()
+            is MultiSelectListPreference -> {
+                summary = values.mapNotNull { value ->
+                    val valueIndex = entryValues.indexOf(value)
+                    entries.getOrNull(valueIndex)
+                }.joinToString().ifEmpty { getString(R.string.none) }
             }
         }
     }

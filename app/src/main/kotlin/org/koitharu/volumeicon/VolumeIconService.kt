@@ -115,7 +115,7 @@ class VolumeIconService : AccessibilityService() {
         val outputDevice = audioManager.getOutputDevice()
         if (currentDevice != outputDevice) {
             if (currentDevice != null) {
-                toastFactory.createDeviceToast(outputDevice).show()
+                handleDeviceChanged(outputDevice)
             }
             currentDevice = outputDevice
         }
@@ -130,6 +130,16 @@ class VolumeIconService : AccessibilityService() {
             notificationHolder.showNotification(volumePercent, outputDevice)
         } else {
             notificationHolder.clear()
+        }
+    }
+
+    private fun handleDeviceChanged(outputDevice: OutputDevice) {
+        val actions = settings.onDeviceChangedActions
+        if (AppSettings.VALUE_SHOW_UI in actions) {
+            audioManager.adjustVolume(AudioManager.ADJUST_SAME, AudioManager.FLAG_SHOW_UI)
+        }
+        if (AppSettings.VALUE_SHOW_TOAST in actions) {
+            toastFactory.createDeviceToast(outputDevice).show()
         }
     }
 
