@@ -17,12 +17,13 @@ import android.os.Looper
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
+import org.koitharu.volumeicon.OutputDevice.Type.BUILTIN_SPEAKER
 import org.koitharu.volumeicon.config.AppSettings
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_ICON_THEME
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_NOTIFICATION_POLICY
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SPEAKER_ONLY
 import org.koitharu.volumeicon.config.BeepPolicy
-import org.koitharu.volumeicon.utils.isBuiltInSpeakerInUse
+import org.koitharu.volumeicon.utils.getOutputDevice
 import org.koitharu.volumeicon.utils.registerReceiverCompat
 
 class VolumeIconService : AccessibilityService() {
@@ -35,10 +36,14 @@ class VolumeIconService : AccessibilityService() {
     private lateinit var preferenceListener: AutoCloseable
     private lateinit var volumeControlReceiver: VolumeControlReceiver
     private lateinit var toneGenerator: ToneGenerator
+    private lateinit var toastFactory: ToastFactory
+
+    private var currentDevice: OutputDevice? = null
 
     override fun onCreate() {
         super.onCreate()
         settings = AppSettings(this)
+        toastFactory = ToastFactory(this)
         volumeControlReceiver = VolumeControlReceiver()
         toneGenerator = ToneGenerator(STREAM_MUSIC, 100)
         notificationHolder = NotificationHolder(this, settings.iconTheme)
@@ -107,8 +112,14 @@ class VolumeIconService : AccessibilityService() {
 
     private fun handleVolumeChanged() {
         val currentVolume = audioManager.getStreamVolume(STREAM_MUSIC)
-        val isHeadphonesConnected = !audioManager.isBuiltInSpeakerInUse()
-        if (settings.isNotificationForSpeakerOnly && isHeadphonesConnected) {
+        val outputDevice = audioManager.getOutputDevice()
+        if (currentDevice != outputDevice) {
+            if (currentDevice != null) {
+                toastFactory.createDeviceToast(outputDevice).show()
+            }
+            currentDevice = outputDevice
+        }
+        if (settings.isNotificationForSpeakerOnly && outputDevice.type != BUILTIN_SPEAKER) {
             notificationHolder.clear()
             return
         }
@@ -116,7 +127,7 @@ class VolumeIconService : AccessibilityService() {
         if (policy.shouldShow(isMuted = currentVolume == 0)) {
             val maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC)
             val volumePercent = currentVolume * 100 / maxVolume
-            notificationHolder.showNotification(volumePercent, isHeadphonesConnected)
+            notificationHolder.showNotification(volumePercent, outputDevice)
         } else {
             notificationHolder.clear()
         }
