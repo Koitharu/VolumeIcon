@@ -8,6 +8,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
+import org.koitharu.volumeicon.OutputDevice.Type.HEADPHONES
 import org.koitharu.volumeicon.config.IconTheme
 
 class NotificationHolder(
@@ -35,7 +36,7 @@ class NotificationHolder(
         }
     }
 
-    fun showNotification(volume: Int, isHeadphones: Boolean) {
+    fun showNotification(volume: Int, device: OutputDevice) {
         val notification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(context, CHANNEL_ID)
         } else {
@@ -46,7 +47,7 @@ class NotificationHolder(
         notification.setSmallIcon(
             when {
                 isMuted -> iconTheme.mutedIcon
-                isHeadphones -> iconTheme.headphonesIcon
+                device.type == HEADPHONES -> iconTheme.headphonesIcon
                 volume < HIGH_VOLUME_THRESHOLD -> iconTheme.lowVolumeIcon
                 else -> iconTheme.highVolumeIcon
             }
@@ -58,6 +59,7 @@ class NotificationHolder(
                 context.getString(R.string.volume_level, volume)
             }
         )
+        notification.setContentText(device.getLabel(context.resources))
         if (!isMuted) {
             val action = Notification.Action.Builder(
                 null,

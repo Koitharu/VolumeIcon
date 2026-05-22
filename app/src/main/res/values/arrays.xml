@@ -32,4 +32,12 @@
         <item>ENABLED</item>
         <item>DISABLED</item>
     </string-array>
+    <string-array name="device_change_actions">
+        <item>@string/show_popup_message</item>
+        <item>@string/show_volume_control</item>
+    </string-array>
+    <string-array name="device_change_action_values">
+        <item>toast</item>
+        <item>volume_ui</item>
+    </string-array>
 </resources>

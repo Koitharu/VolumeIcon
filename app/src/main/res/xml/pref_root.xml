@@ -33,5 +33,10 @@
             android:key="no_ui"
             android:summary="@string/hide_volume_slider_description"
             android:title="@string/hide_volume_slider" />
+        <MultiSelectListPreference
+            android:entries="@array/device_change_actions"
+            android:entryValues="@array/device_change_action_values"
+            android:key="device_change_actions"
+            android:title="When output device is changed" />
     </PreferenceCategory>
 </PreferenceScreen>
