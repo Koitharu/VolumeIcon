@@ -1,6 +1,6 @@
 ## VolumeIcon
 
-Tiny (<100kB) Android app that show a volume icon in the status bar and provide some tweaks for
+Tiny (~100kB) Android app that show a volume icon in the status bar and provide some tweaks for
 the volume control.
 
 ![image.png](assets/image.png)

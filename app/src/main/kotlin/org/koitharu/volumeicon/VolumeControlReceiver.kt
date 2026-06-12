@@ -25,7 +25,17 @@ class VolumeControlReceiver : BroadcastReceiver() {
                 )
             }
         } else {
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, targetVolume, 0)
+            val volume = if (targetVolume == UNMUTE) {
+                val userVolume = VolumeWatcher.lastNonZeroVolume
+                if (userVolume <= 0) {
+                    (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 0.3).toInt()
+                } else {
+                    userVolume
+                }
+            } else {
+                targetVolume
+            }
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, volume, 0)
             showToast(context, targetVolume)
         }
     }
@@ -56,7 +66,9 @@ class VolumeControlReceiver : BroadcastReceiver() {
 
         private const val ACTION_SET_VOLUME = "org.koitharu.volumeicon.ACTION_SET_VOLUME"
         private const val SCHEME = "volume"
-        private const val SHOW_UI = -1
+        private const val MUTE = 0
+        private const val UNMUTE = -1
+        private const val SHOW_UI = -2
 
         val intentFilter: IntentFilter
             get() = IntentFilter(ACTION_SET_VOLUME).apply {
@@ -70,5 +82,9 @@ class VolumeControlReceiver : BroadcastReceiver() {
         }
 
         fun getUiPendingIntent(context: Context) = getPendingIntent(context, SHOW_UI)
+
+        fun getMutePendingIntent(context: Context) = getPendingIntent(context, MUTE)
+
+        fun getUnmutePendingIntent(context: Context) = getPendingIntent(context, UNMUTE)
     }
 }

@@ -29,7 +29,6 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addPreferencesFromResource(R.xml.pref_main)
-        addPreferencesFromResource(R.xml.pref_extra)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         preferenceScreen.bindSummary()

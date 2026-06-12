@@ -138,6 +138,7 @@ class VolumeIconService : AccessibilityService() {
         isMusicActive: Boolean = audioManager.isMusicActive
     ) {
         val currentVolume = audioManager.getStreamVolume(STREAM_MUSIC)
+        VolumeWatcher.onVolumeChanged(currentVolume)
         val outputDevice = audioManager.getOutputDevice()
         if (currentDevice != outputDevice) {
             if (currentDevice != null) {

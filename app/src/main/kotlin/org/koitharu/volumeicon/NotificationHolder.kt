@@ -60,14 +60,20 @@ class NotificationHolder(
             }
         )
         notification.setContentText(device.getLabel(context.resources))
-        if (!isMuted) {
-            val action = Notification.Action.Builder(
+        val action = if (isMuted) {
+            Notification.Action.Builder(
+                null,
+                context.getString(R.string.unmute),
+                VolumeControlReceiver.getUnmutePendingIntent(context)
+            )
+        } else {
+            Notification.Action.Builder(
                 null,
                 context.getString(R.string.mute),
-                VolumeControlReceiver.getPendingIntent(context, targetVolume = 0)
+                VolumeControlReceiver.getMutePendingIntent(context)
             )
-            notification.addAction(action.build())
         }
+        notification.addAction(action.build())
         notification.setContentIntent(VolumeControlReceiver.getUiPendingIntent(context))
         notification.setProgress(100, volume, false)
         notification.setOngoing(true)
