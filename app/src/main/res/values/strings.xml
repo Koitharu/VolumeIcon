@@ -35,4 +35,6 @@
     <string name="show_popup_message">Show pop-up message</string>
     <string name="show_volume_control">Show volume slider</string>
     <string name="none">None</string>
+    <string name="notification_for_muted_music">Notify if active muted playback</string>
+    <string name="notification_for_muted_music_summary">Show notification if you have an active media playback (e.g. music player) but volume is muted</string>
 </resources>

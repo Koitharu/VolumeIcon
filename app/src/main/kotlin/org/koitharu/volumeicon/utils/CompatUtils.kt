@@ -1,9 +1,11 @@
 package org.koitharu.volumeicon.utils
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.IntentFilter
+import android.media.AudioAttributes
 import android.media.AudioDeviceInfo.TYPE_BLE_HEADSET
 import android.media.AudioDeviceInfo.TYPE_BLE_SPEAKER
 import android.media.AudioDeviceInfo.TYPE_BLUETOOTH_A2DP
@@ -15,6 +17,7 @@ import android.media.AudioDeviceInfo.TYPE_USB_HEADSET
 import android.media.AudioDeviceInfo.TYPE_WIRED_HEADPHONES
 import android.media.AudioDeviceInfo.TYPE_WIRED_HEADSET
 import android.media.AudioManager
+import android.media.AudioPlaybackConfiguration
 import android.os.Build
 import org.koitharu.volumeicon.OutputDevice
 import org.koitharu.volumeicon.OutputDevice.Type
@@ -74,4 +77,9 @@ fun AudioManager.getOutputDevice(): OutputDevice {
         }
         OutputDevice(type, null)
     }
+}
+
+@TargetApi(Build.VERSION_CODES.O)
+fun Collection<AudioPlaybackConfiguration?>?.hasMediaPlayback(): Boolean = !this.isNullOrEmpty() && any {
+    it != null && it.audioAttributes.usage == AudioAttributes.USAGE_MEDIA
 }

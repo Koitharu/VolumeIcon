@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="pref_notification"
+        android:title="@string/volume_icon_notification">
+        <ListPreference
+            android:defaultValue="ALWAYS"
+            android:entries="@array/show_notification"
+            android:entryValues="@array/show_notification_values"
+            android:key="notify_policy"
+            android:title="@string/show_notification" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="speaker_only"
+            android:summary="@string/notification_for_builtin_only_summary"
+            android:title="@string/notification_for_builtin_only" />
+        <ListPreference
+            android:defaultValue="SOLID"
+            android:entries="@array/icon_themes"
+            android:entryValues="@array/icon_themes_values"
+            android:key="icon_theme"
+            android:title="@string/icon_theme" />
+        <Preference
+            android:key="system_notifications_settings"
+            android:title="@string/system_notifications_settings" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="pref_tweaks"
+        android:title="@string/volume_adjusting_tweaks">
+        <ListPreference
+            android:defaultValue="SYSTEM"
+            android:entries="@array/beeps"
+            android:entryValues="@array/beeps_values"
+            android:key="beeps"
+            android:title="@string/volume_buttons_sound" />
+        <SwitchPreference
+            android:key="no_ui"
+            android:summary="@string/hide_volume_slider_description"
+            android:title="@string/hide_volume_slider" />
+        <MultiSelectListPreference
+            android:entries="@array/device_change_actions"
+            android:entryValues="@array/device_change_action_values"
+            android:key="device_change_actions"
+            android:title="When output device is changed" />
+    </PreferenceCategory>
+</PreferenceScreen>

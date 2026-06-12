@@ -10,8 +10,11 @@ import android.content.IntentFilter
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.media.AudioManager.AudioPlaybackCallback
 import android.media.AudioManager.STREAM_MUSIC
+import android.media.AudioPlaybackConfiguration
 import android.media.ToneGenerator
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.KeyEvent
@@ -20,10 +23,12 @@ import android.view.accessibility.AccessibilityManager
 import org.koitharu.volumeicon.OutputDevice.Type.BUILTIN_SPEAKER
 import org.koitharu.volumeicon.config.AppSettings
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_ICON_THEME
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_MUTED_MUSIC
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_NOTIFICATION_POLICY
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SPEAKER_ONLY
 import org.koitharu.volumeicon.config.BeepPolicy
 import org.koitharu.volumeicon.utils.getOutputDevice
+import org.koitharu.volumeicon.utils.hasMediaPlayback
 import org.koitharu.volumeicon.utils.registerReceiverCompat
 
 class VolumeIconService : AccessibilityService() {
@@ -38,6 +43,7 @@ class VolumeIconService : AccessibilityService() {
     private lateinit var toneGenerator: ToneGenerator
     private lateinit var toastFactory: ToastFactory
 
+    private var playbackCallback: AudioPlaybackCallback? = null
     private var currentDevice: OutputDevice? = null
 
     override fun onCreate() {
@@ -61,6 +67,13 @@ class VolumeIconService : AccessibilityService() {
             override fun onAudioDevicesRemoved(removedDevices: Array<out AudioDeviceInfo>) =
                 handleVolumeChanged()
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            playbackCallback = object : AudioPlaybackCallback() {
+                override fun onPlaybackConfigChanged(configs: List<AudioPlaybackConfiguration?>?) {
+                    handleVolumeChanged(isMusicActive = configs.hasMediaPlayback())
+                }
+            }
+        }
     }
 
     override fun onServiceConnected() {
@@ -75,10 +88,16 @@ class VolumeIconService : AccessibilityService() {
             },
             true
         )
-        audioManager.registerAudioDeviceCallback(deviceCallback, Handler(Looper.getMainLooper()))
+        val handler = Handler(Looper.getMainLooper())
+        audioManager.registerAudioDeviceCallback(deviceCallback, handler)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            playbackCallback?.let {
+                audioManager.registerAudioPlaybackCallback(it, handler)
+            }
+        }
         handleVolumeChanged()
         preferenceListener = settings.doOnSettingsChanged(
-            setOf(KEY_ICON_THEME, KEY_NOTIFICATION_POLICY, KEY_SPEAKER_ONLY)
+            setOf(KEY_ICON_THEME, KEY_NOTIFICATION_POLICY, KEY_SPEAKER_ONLY, KEY_MUTED_MUSIC)
         ) {
             notificationHolder.iconTheme = iconTheme
             handleVolumeChanged()
@@ -89,6 +108,11 @@ class VolumeIconService : AccessibilityService() {
         super.onDestroy()
         preferenceListener.close()
         audioManager.unregisterAudioDeviceCallback(deviceCallback)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            playbackCallback?.let {
+                audioManager.unregisterAudioPlaybackCallback(it)
+            }
+        }
         unregisterReceiver(volumeControlReceiver)
         unregisterReceiver(volumeReceiver)
         notificationHolder.clear()
@@ -110,7 +134,9 @@ class VolumeIconService : AccessibilityService() {
         return super.onKeyEvent(event)
     }
 
-    private fun handleVolumeChanged() {
+    private fun handleVolumeChanged(
+        isMusicActive: Boolean = audioManager.isMusicActive
+    ) {
         val currentVolume = audioManager.getStreamVolume(STREAM_MUSIC)
         val outputDevice = audioManager.getOutputDevice()
         if (currentDevice != outputDevice) {
@@ -124,7 +150,7 @@ class VolumeIconService : AccessibilityService() {
             return
         }
         val policy = settings.notificationPolicy
-        if (policy.shouldShow(isMuted = currentVolume == 0)) {
+        if (policy.shouldShow(isMuted = currentVolume == 0) || (settings.isNotifyForMutedMusic && isMusicActive)) {
             val maxVolume = audioManager.getStreamMaxVolume(STREAM_MUSIC)
             val volumePercent = currentVolume * 100 / maxVolume
             notificationHolder.showNotification(volumePercent, outputDevice)

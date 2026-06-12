@@ -20,6 +20,8 @@ android {
 
     lint {
         disable += "AccessibilityPolicy"
+        disable += "MissingTranslation"
+        disable += "UseRequiresApi" // not available without AndroidX libs
     }
 
     buildTypes {

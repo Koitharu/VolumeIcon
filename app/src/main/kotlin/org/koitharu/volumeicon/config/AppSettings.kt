@@ -2,6 +2,7 @@ package org.koitharu.volumeicon.config
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.preference.PreferenceManager
 
 class AppSettings(context: Context) {
@@ -33,6 +34,10 @@ class AppSettings(context: Context) {
     val isNotificationForSpeakerOnly: Boolean
         get() = prefs.getBoolean(KEY_SPEAKER_ONLY, false)
 
+    val isNotifyForMutedMusic: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                prefs.getBoolean(KEY_MUTED_MUSIC, false)
+
     val hideVolumeUi: Boolean
         get() = prefs.getBoolean(KEY_HIDE_UI, false)
 
@@ -55,6 +60,7 @@ class AppSettings(context: Context) {
 
         const val KEY_NOTIFICATION_POLICY = "notify_policy"
         const val KEY_SPEAKER_ONLY = "speaker_only"
+        const val KEY_MUTED_MUSIC = "muted_music"
         const val KEY_ICON_THEME = "icon_theme"
         const val KEY_SYSTEM_NOTIFICATIONS_SETTINGS = "system_notifications_settings"
         const val KEY_BEEPS = "beeps"

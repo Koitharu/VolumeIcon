@@ -1,28 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?><!--suppress DeprecatedClassUsageInspection -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/volume_icon_notification">
+    <PreferenceCategory
+        android:key="pref_notification"
+        android:title="@string/volume_icon_notification">
         <ListPreference
             android:defaultValue="ALWAYS"
             android:entries="@array/show_notification"
             android:entryValues="@array/show_notification_values"
             android:key="notify_policy"
             android:title="@string/show_notification" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="muted_music"
+            android:summary="@string/notification_for_muted_music_summary"
+            android:title="@string/notification_for_muted_music" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="speaker_only"
+            android:summary="@string/notification_for_builtin_only_summary"
+            android:title="@string/notification_for_builtin_only" />
         <ListPreference
             android:defaultValue="SOLID"
             android:entries="@array/icon_themes"
             android:entryValues="@array/icon_themes_values"
             android:key="icon_theme"
             android:title="@string/icon_theme" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="speaker_only"
-            android:summary="@string/notification_for_builtin_only_summary"
-            android:title="@string/notification_for_builtin_only" />
         <Preference
             android:key="system_notifications_settings"
             android:title="@string/system_notifications_settings" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/volume_adjusting_tweaks">
+    <PreferenceCategory
+        android:key="pref_tweaks"
+        android:title="@string/volume_adjusting_tweaks">
         <ListPreference
             android:defaultValue="SYSTEM"
             android:entries="@array/beeps"

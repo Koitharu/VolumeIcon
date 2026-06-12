@@ -15,16 +15,21 @@ import org.koitharu.volumeicon.NotificationHolder
 import org.koitharu.volumeicon.R
 import org.koitharu.volumeicon.VolumeIconService
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_ICON_THEME
+import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_MUTED_MUSIC
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_NOTIFICATION_POLICY
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SPEAKER_ONLY
 import org.koitharu.volumeicon.config.AppSettings.Companion.KEY_SYSTEM_NOTIFICATIONS_SETTINGS
+import org.koitharu.volumeicon.config.NotificationPolicy.ALWAYS
+import org.koitharu.volumeicon.config.NotificationPolicy.NEVER
+import org.koitharu.volumeicon.config.NotificationPolicy.NOT_MUTED
 
 @SuppressLint("ExportedPreferenceActivity")
 class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        addPreferencesFromResource(R.xml.pref_root)
+        addPreferencesFromResource(R.xml.pref_main)
+        addPreferencesFromResource(R.xml.pref_extra)
         actionBar?.setDisplayHomeAsUpEnabled(true)
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         preferenceScreen.bindSummary()
@@ -86,10 +91,13 @@ class SettingsActivity : PreferenceActivity(), SharedPreferences.OnSharedPrefere
     }
 
     private fun updateDependencies() {
-        val isNotificationsOn = preferenceManager.sharedPreferences.getString(
-            KEY_NOTIFICATION_POLICY, NotificationPolicy.ALWAYS.name
-        ) != NotificationPolicy.NEVER.name
+        val notificationPolicy = preferenceManager.sharedPreferences.getString(
+            KEY_NOTIFICATION_POLICY, ALWAYS.name
+        )?.let { raw -> NotificationPolicy.entries.find { it.name == raw } }
+        val isNotificationsOn = notificationPolicy != NEVER
         findPreference(KEY_SPEAKER_ONLY)?.isEnabled = isNotificationsOn
         findPreference(KEY_ICON_THEME)?.isEnabled = isNotificationsOn
+        findPreference(KEY_MUTED_MUSIC)?.isEnabled =
+            notificationPolicy == NEVER || notificationPolicy == NOT_MUTED
     }
 }
