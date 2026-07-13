@@ -1,3 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">Helivaljuse ikoon</string>
+    <string name="service_description">Näita teavituste ribal helivaljuse ikooni</string>
+    <string name="settings">Seadistused</string>
+    <string name="always">Alati</string>
+    <string name="never">Mitte kunagi</string>
+    <string name="when_muted">Summutatuna</string>
+    <string name="when_not_muted">Kui pole summutatud</string>
+    <string name="show_notification">Näita teavitust</string>
+    <string name="volume_icon_notification">Helivaljuse ikooni teavitus</string>
+    <string name="volume_level">Helivaljus: %d%%</string>
+    <string name="volume_is_muted">Heli on summutatud</string>
+    <string name="icon_theme">Ikoonivariant</string>
+    <string name="solid">Otsekohene</string>
+    <string name="rounded">Ümar</string>
+    <string name="light">Hele</string>
+    <string name="system_notifications_settings">Süsteemiteavituste seadistused</string>
+    <string name="mute">Summuta</string>
+    <string name="unmute">Lõpeta summutamine</string>
+    <string name="volume_adjusting_tweaks">Helivaljuse kohendamise peenhäälestus</string>
+    <string name="enabled">Kasutusel</string>
+    <string name="disabled">Pole kasutusel</string>
+    <string name="hide_volume_slider">Peida helivaljuse liugurnupp</string>
+    <string name="hide_volume_slider_description">Kui kasutad väliseid helivaljuse nuppe, siis peida liugur</string>
+    <string name="service_is_not_running">Taustateenus ei tööta</string>
+    <string name="notification_for_builtin_only">Näita teavitust vaid seadmesisese kõlari puhul</string>
+    <string name="bluetooth_device">Bluetooth-seade</string>
+    <string name="headphones">Kõrvaklapid</string>
+    <string name="builtin_speaker">Sisseehitatud kõlar</string>
+    <string name="other_device">Muu seade</string>
+    <string name="notification_for_builtin_only_summary">Kui hetkel kasutusel väljundseade on kõrvaklapid või muu väline seade, siis peida teavitus</string>
+    <string name="show_popup_message">Näita hüpikteadet</string>
+    <string name="show_volume_control">Näita helivaljuse liugurnuppu</string>
+    <string name="none">Puudub</string>
+    <string name="system_behavior">Süsteemi käitumine</string>
+    <string name="volume_buttons_sound">Helivaljuse nuppude hääl</string>
 </resources>

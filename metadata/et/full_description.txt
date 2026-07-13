@@ -1,0 +1,9 @@
+Väike (<100 kB) Androidi rakendus, mis kuvab helivaljuse ikooni olekuribal ja pakub mõningaid helivaljuse reguleerimise võimalusi.
+
+Rakendusel puudub käivitusikoon ning seda saab aktiveerida ja seadistada menüüs „Seaded“ → „Hõlbustus/Juurdepääsetavus“.
+
+Uue rakenduse juurdepääsetavuse teenuse aktiveerimiseks toimi järgnevat:
+
+1. Luba seadistused: ava Seaded → Rakendused → leia ja vali Helivaljuse ikoon.
+2. Eemalda piirang: puuduta kolme punkti ülemises paremas nurgas ja vali Luba piiratud seaded. Autendi end PIN-koodi või sõrmejäljega.
+3. Aktiveeri teenus: minge tagasi Seaded → Juurdepääsetavus → vali Helivaljuse ikoon ja lülita liugurnupp sisse.
