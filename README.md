@@ -14,3 +14,7 @@ To enable the accessibility service for your newly installed app, follow these q
    settings. Authenticate with your PIN or fingerprint.
 3. **Enable Service:** Go back to Settings → Accessibility → select Volume Icon and turn the switch
    ON.
+
+[![Translation status](https://hosted.weblate.org/widget/volumeicon/matrix-auto.svg)](https://hosted.weblate.org/engage/volumeicon/)
+
+[<img src="https://raw.githubusercontent.com/rubenpgrady/get-it-on-github/refs/heads/main/get-it-on-github.png" alt="Get it on GitHub" height="80" />](https://github.com/Koitharu/VolumeIcon/releases/latest) [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.koitharu.volumeicon)
