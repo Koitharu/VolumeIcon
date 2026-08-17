@@ -1,4 +1,4 @@
-Väike (<100 kB) Androidi rakendus, mis kuvab helivaljuse ikooni olekuribal ja pakub mõningaid helivaljuse reguleerimise võimalusi.
+Väike (~100 kB) Androidi rakendus, mis kuvab helivaljuse ikooni olekuribal ja pakub mõningaid helivaljuse reguleerimise võimalusi.
 
 Rakendusel puudub käivitusikoon ning seda saab aktiveerida ja seadistada menüüs „Seaded“ → „Hõlbustus/Juurdepääsetavus“.
 
