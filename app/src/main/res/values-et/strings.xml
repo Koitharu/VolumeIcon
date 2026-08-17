@@ -35,4 +35,6 @@
     <string name="none">Puudub</string>
     <string name="system_behavior">Süsteemi käitumine</string>
     <string name="volume_buttons_sound">Helivaljuse nuppude hääl</string>
+    <string name="notification_for_muted_music">Teavita, kui pooleliolev esitus on summutatud</string>
+    <string name="notification_for_muted_music_summary">Näita teavitatust, kui sul on meediumi taasesitus pooleli, aga heli on summutatud olekus</string>
 </resources>
